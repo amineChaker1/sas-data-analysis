@@ -7,11 +7,21 @@ proc import datafile="&tsapath/TSAClaims2002_2017.csv" dbms=csv out=tsa.ClaimsIm
     GUESSINGROWS=MAX;
 run;
 
+proc sort data=tsa.ClaimsImported out=tsa.Claims_NoDups noduprecs;
+     by _all_;
+run;
+
+proc sort data=tsa.Claims_NoDups;
+    by Incident_Date;
+run;
+
 data claims_clean;
-    set tsa.claimsimported;
-    if Claim_Type=" " then Claim_Type = "Unknown";
-    if Claim_Site=" "  then Claim_Site = "Unknown";
-    if Disposition=" " then Disposition= "Unknown";
+    set tsa.Claims_NoDups;
+    if Claim_Type in ("","-") then Claim_Type = "Unknown";
+    if Claim_Site in ("","-") then Claim_Site = "Unknown";
+    if Disposition in ("","-")  then Disposition= "Unknown";
+       else if Disposition = "losed: Contractor Claim" then Disposition = "Closed:Contractor Claim";
+       else if Disposition = "Closed: Canceled" then Disposition = "Closed:Canceled";
     where Claim_Type in ("Bus Terminal", "Complaint", "Compliment", "Employee Loss (MPCECA)", "Missed Flight", "Motor Vehicle",
     "Not Provided","Passenger Property Loss", "Passenger Theft", "Personal Injury",
     "Property Damage", "Property Loss", "Unknown", "Wrongful Death") 
