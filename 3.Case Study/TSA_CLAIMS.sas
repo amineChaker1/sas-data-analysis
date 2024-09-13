@@ -46,21 +46,25 @@ data claims_clean;
    
     StateName = upcase(StateName);
     State = upcase(State);
-    
-    if (Incident_Date < Date_Recieved or Incident_Date=. or Date_Recieved=. or
+    *a problem here in date recieved there are two cols;
+    if ( Incident_Date > Date_Received or
+    Incident_Date= . or
+    Date_Received= . or
     year(Incident_Date) < 2002 or
     year(Incident_Date) > 2017 or
-    year(Date_Recieved) < 2002 or
-    year(Date_Recieved) > 2017 ) then Date_Issues="Needs Review";
+    year(Date_Received) < 2002 or
+    year(Date_Received) > 2017 ) then Date_Issues="Needs Review";
     
-    format Date_Recieved Incident_Date date9. Close_Amount dollar20.2;
+    
+    format Date_Received Incident_Date date9. Close_Amount dollar20.2;
     drop County City;
+    
 run;
 
 *Checking that the data has been cleaned;
 proc contents data=claims_clean;
 run;
 
-proc freq data=claims_clean;
-     tables Claim_Site Disposition Claim_Type / nocum nopercent;
+proc freq data=claims_clean order=freq;
+     tables Claim_Site Disposition Claim_Type Date_Issues / nocum nopercent;
 run;  
