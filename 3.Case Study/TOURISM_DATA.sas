@@ -66,7 +66,7 @@ run;
 
 /* Create the Final_Tourism Table */
 /* 1. Create a format for the Continent column that labels continent IDs with the corresponding continent names: */
-/*
+
 proc format;
 	value contIDs
 		1 = "North America"
@@ -77,7 +77,7 @@ proc format;
 		6 = "Oceania"
 		7 = "Antarctica";
 run;
-*/
+
 /* 2. Merge the cleaned_tourism table with a sorted version of country_info to create the final_tourism table.
  Include only matches in the output table. Use the new format to format Continent. */
 /*
